@@ -3,7 +3,7 @@
 
 _MOHAMED ABDILLAHI, Abdillahi, 2230694, 55_
 
-_NOM2, Prénom2, no_étudiant2, NC2_
+_Boubacar Laougé Abdoul Moumouni, 22306329, 82
 
 _GIT url_ 
 
