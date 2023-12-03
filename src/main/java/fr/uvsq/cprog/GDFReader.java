@@ -32,7 +32,7 @@ public class GDFReader {
     private void upgradeNote()
     {
         String[] contenus = currentFolder.list();
-        JSONObject notesJ = new JSONObject();
+
         JSONArray notesJson = new JSONArray();
         for(String contenu : contenus){
             JSONObject item = new JSONObject();
@@ -41,7 +41,6 @@ public class GDFReader {
             item.put("ER", contenu);
             notesJson.put(item);
         }
-        notesJ.put("notes", notesJson);
 
         try {
             FileWriter myWriter = new FileWriter(this.notes);
@@ -64,19 +63,15 @@ public class GDFReader {
         }
         try{
             String contenuNotes = new String(Files.readAllBytes(Paths.get(this.notes.getAbsolutePath())));
-            JSONObject jsonObj = new JSONObject(contenuNotes);
-            JSONArray jsonArray = jsonObj.getJSONArray("notes");
+            JSONArray jsonArray = new JSONArray(contenuNotes);
             ner += 1;
             JSONObject item = new JSONObject();
             item.put("NER", ner);
             item.put("ER", theDir.getName());
             jsonArray.put(item);
 
-            JSONObject json = new JSONObject();
-            json.put("notes", jsonArray);
-
             FileWriter myWriter = new FileWriter(this.notes);
-            String jsonString = json.toString();
+            String jsonString = jsonArray.toString();
             myWriter.write(jsonString);
             myWriter.close();
 
@@ -100,19 +95,15 @@ public class GDFReader {
             }
 
             String contenuNotes = new String(Files.readAllBytes(Paths.get(this.notes.getAbsolutePath())));
-            JSONObject jsonObj = new JSONObject(contenuNotes);
-            JSONArray jsonArray = jsonObj.getJSONArray("notes");
+            JSONArray jsonArray = new JSONArray(contenuNotes);
             ner += 1;
             JSONObject item = new JSONObject();
             item.put("NER", ner);
             item.put("ER", theFile.getName());
             jsonArray.put(item);
 
-            JSONObject json = new JSONObject();
-            json.put("notes", jsonArray);
-
             FileWriter myWriter = new FileWriter(this.notes);
-            String jsonString = json.toString();
+            String jsonString = jsonArray.toString();
             myWriter.write(jsonString);
             myWriter.close();
 
@@ -133,8 +124,7 @@ public class GDFReader {
 
         try{
             contenuNotes = new String(Files.readAllBytes(Paths.get(this.notes.getAbsolutePath())));
-            JSONObject jsonObj = new JSONObject(contenuNotes);
-            JSONArray jsonArray = jsonObj.getJSONArray("notes");
+            JSONArray jsonArray = new JSONArray(contenuNotes);
 
             for(int i=0; i < jsonArray.length(); i++){
                 JSONObject item = jsonArray.getJSONObject(i);
