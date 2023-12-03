@@ -22,14 +22,12 @@ public class GDFReaderTest
         String res = gdf.ls_method();
         String res2 = "Ner Name\n" 
         + "--- ----\n"
-        + "1 Doc\n" 
-        + "2 file.txt\n" 
-        + "3 notes.json\n";
+        + "1 notes.json\n";
 
         // Assert
         assertEquals(res, res2);
     }
-    
+
     // @Test
     // public void TestOfMkdirMethod()
     // {

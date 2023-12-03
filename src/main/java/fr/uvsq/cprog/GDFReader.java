@@ -31,6 +31,12 @@ public class GDFReader {
     // On monte les fichiers déjà existant dans le fichier Notes.json avec l'association du NER pour chaque ER
     private void upgradeNote()
     {
+        try {
+            this.notes.createNewFile();
+        } catch (Exception e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
         String[] contenus = currentFolder.list();
 
         JSONArray notesJson = new JSONArray();
