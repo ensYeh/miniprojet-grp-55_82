@@ -1,6 +1,6 @@
 package fr.uvsq.cprog;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -13,9 +13,17 @@ public class GDFAppTest
      * Rigorous Test :-)
      */
     @Test
-    public void shouldAnswerWithTrue()
+    public void TestOfExecuteMethod()
     {
-        assertTrue( true );
+        // // Arrange 
+        String[] splitInput = {"ls"};
+        // Act
+        String res = GDFApp.execute(splitInput);
+        String res2 = "Ner Name\n" 
+        + "--- ----\n"
+        + "C:\\Users\\HP\\Home>";
+        // Assert
+        assertEquals(res, res2);
     }
     
 }

@@ -5,54 +5,52 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import org.json.*;
+
+// import org.json.*;
+// import org.json.JSONArray;
 
 
 public class GDFReader {
     private File currentFolder;
     private File notes;
-    private int ner = 0;
     
 
     public GDFReader()
     {
         this.currentFolder = new File("C:\\Users\\HP\\Home");
-        this.notes = new File(this.currentFolder.getAbsolutePath() + "\\notes.json");
-        this.upgradeNote();
+        this.notes = new File(this.currentFolder.getAbsolutePath() + "\\notes.ser");
+        this.serializedNote();
     }
 
     public GDFReader(String path)
     {
         this.currentFolder = new File(path);
-        this.notes = new File(this.currentFolder.getAbsolutePath() + "\\notes.json");
-        this.upgradeNote();
+        this.notes = new File(this.currentFolder.getAbsolutePath() + "\\notes.ser");
+        this.serializedNote();
     }
 
-    // On monte les fichiers déjà existant dans le fichier Notes.json avec l'association du NER pour chaque ER
-    private void upgradeNote()
+    public String getCurrentFolderPath()
     {
-        try {
-            this.notes.createNewFile();
-        } catch (Exception e) {
-            System.out.println("An error occurred.");
+        return this.currentFolder.getAbsolutePath();
+    }
+
+    // On monte les fichiers déjà existant dans le fichier notes.ser avec l'association du NER pour chaque ER
+    public void serializedNote()
+    {
+        String[] contenus = this.currentFolder.list();
+        ArrayList<ER> elements = new ArrayList<ER>();
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.notes))) {
+            for(String contenu : contenus){
+                ER er = new ER(contenu);
+                elements.add(er);
+                
+            }
+
+            oos.writeObject(elements);
+            oos.close();
+            
+        } catch (FileNotFoundException e){
             e.printStackTrace();
-        }
-        String[] contenus = currentFolder.list();
-
-        JSONArray notesJson = new JSONArray();
-        for(String contenu : contenus){
-            JSONObject item = new JSONObject();
-            ner += 1;
-            item.put("NER", ner);
-            item.put("ER", contenu);
-            notesJson.put(item);
-        }
-
-        try {
-            FileWriter myWriter = new FileWriter(this.notes);
-            String json = notesJson.toString();
-            myWriter.write(json);
-            myWriter.close();
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -61,83 +59,53 @@ public class GDFReader {
 
     public String mkdir_method(String name)
     {
-        File theDir = new File(currentFolder.getAbsolutePath()+"\\"+name);
+        File theDir = new File(this.currentFolder.getAbsolutePath()+"\\"+name);
         if (!theDir.exists()){
             theDir.mkdirs();
+            this.serializedNote();
+            return "Dossier crée avec succès\n";
         }else{
             return "Ce dossier existe deja !\n";
         }
-        try{
-            String contenuNotes = new String(Files.readAllBytes(Paths.get(this.notes.getAbsolutePath())));
-            JSONArray jsonArray = new JSONArray(contenuNotes);
-            ner += 1;
-            JSONObject item = new JSONObject();
-            item.put("NER", ner);
-            item.put("ER", theDir.getName());
-            jsonArray.put(item);
-
-            FileWriter myWriter = new FileWriter(this.notes);
-            String jsonString = jsonArray.toString();
-            myWriter.write(jsonString);
-            myWriter.close();
-
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-
-        return ls_method();
 
     }
     
     public String touch_method(String name)
     {
-        File theFile = new File(currentFolder.getAbsolutePath()+"\\"+name);
+        File theFile = new File(this.currentFolder.getAbsolutePath()+"\\"+name);
         try {
             if (!theFile.exists()){
                 theFile.createNewFile();
+                this.serializedNote();
+                
             }else{
                 return "Ce fichier existe deja !\n";
             }
-
-            String contenuNotes = new String(Files.readAllBytes(Paths.get(this.notes.getAbsolutePath())));
-            JSONArray jsonArray = new JSONArray(contenuNotes);
-            ner += 1;
-            JSONObject item = new JSONObject();
-            item.put("NER", ner);
-            item.put("ER", theFile.getName());
-            jsonArray.put(item);
-
-            FileWriter myWriter = new FileWriter(this.notes);
-            String jsonString = jsonArray.toString();
-            myWriter.write(jsonString);
-            myWriter.close();
-
 
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
 
-        return ls_method();
+        return "Fichier crée avec succès\n";
+
     }
 
     public String ls_method() {
         
         String result="Ner Name\n"
         + "--- ----\n";
-        String contenuNotes;
 
-        try{
-            contenuNotes = new String(Files.readAllBytes(Paths.get(this.notes.getAbsolutePath())));
-            JSONArray jsonArray = new JSONArray(contenuNotes);
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.notes))) {
+            ArrayList<ER> ers = (ArrayList<ER>) ois.readObject();
 
-            for(int i=0; i < jsonArray.length(); i++){
-                JSONObject item = jsonArray.getJSONObject(i);
-                result += item.get("NER") + " " + item.get("ER") +"\n";
+            for(int i=0; i < ers.size(); i++){
+                result += ers.get(i).getNer() + " " + ers.get(i).getEr() +"\n";
             }
-
-        } catch (IOException e) {
+            
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
