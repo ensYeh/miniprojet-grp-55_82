@@ -21,7 +21,7 @@ public class GDFAppTest
         String res = GDFApp.execute(splitInput);
         String res2 = "Ner Name\n" 
         + "--- ----\n"
-        + "C:\\Users\\HP\\Home>";
+        + "\nC:\\Users\\HP\\Home>";
         // Assert
         assertEquals(res, res2);
     }

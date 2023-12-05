@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 
+
 // import org.json.*;
 // import org.json.JSONArray;
 
@@ -57,12 +58,45 @@ public class GDFReader {
         }
     }
 
+    public void serializedNote(ArrayList<ER> ers)
+    {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.notes))) {
+            oos.writeObject(ers);
+            oos.close();
+            
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<ER> deserializedNote()
+    {
+        ArrayList<ER> ers = null;
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.notes))) {
+            ers = (ArrayList<ER>) ois.readObject();
+            
+        } catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        return ers;
+    }
+
     public String mkdir_method(String name)
     {
         File theDir = new File(this.currentFolder.getAbsolutePath()+"\\"+name);
         if (!theDir.exists()){
             theDir.mkdirs();
-            this.serializedNote();
+            ArrayList<ER> ers = this.deserializedNote();
+            ER er = new ER(name);
+            ers.add(er);
+            this.serializedNote(ers);
             return "Dossier crée avec succès\n";
         }else{
             return "Ce dossier existe deja !\n";
@@ -76,8 +110,10 @@ public class GDFReader {
         try {
             if (!theFile.exists()){
                 theFile.createNewFile();
-                this.serializedNote();
-                
+                ArrayList<ER> ers = this.deserializedNote();
+                ER er = new ER(name);
+                ers.add(er);
+                this.serializedNote(ers);  
             }else{
                 return "Ce fichier existe deja !\n";
             }
@@ -91,23 +127,73 @@ public class GDFReader {
 
     }
 
-    public String ls_method() {
-        
+    public String ls_method() 
+    {
         String result="Ner Name\n"
         + "--- ----\n";
 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.notes))) {
-            ArrayList<ER> ers = (ArrayList<ER>) ois.readObject();
+        ArrayList<ER> ers = deserializedNote();
 
-            for(int i=0; i < ers.size(); i++){
-                result += ers.get(i).getNer() + " " + ers.get(i).getEr() +"\n";
-            }
+        for(int i=0; i < ers.size(); i++){
+            result += ers.get(i).getNer() + " " + ers.get(i).getEr() +"\n";
+        }
             
-        } catch(ClassNotFoundException e){
-            e.printStackTrace();
-        }catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+        return result;
+    }
+
+    public GDFReader remonter()
+    {
+        String path = this.currentFolder.getParent();
+        GDFReader gdfParent = new GDFReader(path);
+        return gdfParent;
+    }
+
+    public GDFReader descendre(int ner)
+    {
+        ArrayList<ER> ers = deserializedNote();
+        GDFReader gdfChild = null;
+        for(int i=0; i < ers.size() ; i++){
+            if(ers.get(i).getNer() == ner){
+                File theDir = new File(this.getCurrentFolderPath() + "\\" + ers.get(i).getEr());
+                if(theDir.isDirectory()){
+                    String path = this.getCurrentFolderPath() + "\\" + ers.get(i).getEr();
+                    gdfChild = new GDFReader(path);
+                }
+            }
+        }
+        return gdfChild;
+    }
+
+    public String visu(int ner)
+    {
+        String result = null;
+        ArrayList<ER> ers = deserializedNote();
+        for(int i=0; i < ers.size() ; i++){
+            if(ers.get(i).getNer() == ner){
+                File theFile = new File(this.getCurrentFolderPath() + "\\" + ers.get(i).getEr());
+                if(!theFile.isDirectory()){
+
+                    String ext = ers.get(i).getEr().split("\\.")[1];
+                    if(ext.equals("txt")){
+                        try {
+                            BufferedReader reader = new BufferedReader(new FileReader(theFile));
+                            String line;
+                            result = "";
+                            while ((line = reader.readLine()) != null) {
+                                result += line + "\n";
+                            }
+                
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } 
+                    }else{
+                        result = "Length : "+ Long.toString(theFile.length()) + "\n";
+                    }
+                    
+                }
+                
+            }
         }
 
         return result;
