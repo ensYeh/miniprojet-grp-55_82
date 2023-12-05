@@ -135,9 +135,24 @@ public class GDFReader {
         ArrayList<ER> ers = deserializedNote();
 
         for(int i=0; i < ers.size(); i++){
-            result += ers.get(i).getNer() + " " + ers.get(i).getEr() +"\n";
+            result += ers.get(i).getNer() + " " + ers.get(i).getEr() + " " + ers.get(i).getNote() +"\n";
         }
             
+        return result;
+    }
+
+    public String ajouterNote(int ner, String note)
+    {
+        String result = null;
+        ArrayList<ER> ers = deserializedNote();
+        for(int i=0; i < ers.size(); i++){
+            if(ers.get(i).getNer() == ner){
+                ers.get(i).setNote(note);
+
+                result = "Note ajouté\n";
+            }
+        }
+        this.serializedNote(ers);
         return result;
     }
 

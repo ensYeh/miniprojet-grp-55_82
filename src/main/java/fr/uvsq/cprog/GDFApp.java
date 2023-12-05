@@ -52,6 +52,13 @@ public class GDFApp {
             }else{
                 result += "Cet element n'existe pas ou NER ne désigne pas un fichier !\n";
             }
+        }else if(cmd[1].equals("+")){
+            ner = Integer.parseInt(cmd[0]);
+            if(gdf.ajouterNote(ner, cmd[2]) != null){
+                gdf.ajouterNote(ner, cmd[2]);
+            }else{
+                result += "Ce NER n'existe pas !\n";
+            }
         }else{
             result += "saisir une autre commande\n";
         }
