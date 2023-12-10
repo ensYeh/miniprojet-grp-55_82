@@ -2,7 +2,6 @@ package fr.uvsq.cprog;
 
 import java.util.Scanner;
 
-
 /**
  * La Class GDFApp représente l'interface 
  * utilisateur de base et gère l'interaction 
@@ -10,14 +9,14 @@ import java.util.Scanner;
  *
  */
 public class GDFApp {
-    public static GDFReader gdf = new GDFReader();
-
+    public static GDFReader gdf= new GDFReader("C:\\Users\\HP\\Home");
     public static int ner;
     
     public static void main(String[] args)
     {
-        System.out.println("C:\\Users\\HP\\Home" + ">");
+        gdf = new GDFReader(args[0]);
         while(true){
+            System.out.println("\n" + gdf.getCurrentFolderPath() + ">");
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
             String[] splitInput = input.split(" ");
@@ -55,15 +54,13 @@ public class GDFApp {
         }else if(cmd[1].equals("+")){
             ner = Integer.parseInt(cmd[0]);
             if(gdf.ajouterNote(ner, cmd[2]) != null){
-                gdf.ajouterNote(ner, cmd[2]);
+                result += gdf.ajouterNote(ner, cmd[2]);
             }else{
                 result += "Ce NER n'existe pas !\n";
             }
         }else{
             result += "saisir une autre commande\n";
         }
-
-        result += "\n" + gdf.getCurrentFolderPath() +">";
 
         return result;
     }

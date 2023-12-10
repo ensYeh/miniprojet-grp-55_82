@@ -4,29 +4,24 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-
-
-
-// import org.json.*;
-// import org.json.JSONArray;
-
-
 public class GDFReader {
     private File currentFolder;
     private File notes;
     
 
-    public GDFReader()
-    {
-        this.currentFolder = new File("C:\\Users\\HP\\Home");
-        this.notes = new File(this.currentFolder.getAbsolutePath() + "\\notes.ser");
-        this.serializedNote();
-    }
-
-    public GDFReader(String path)
+    GDFReader (String path)
     {
         this.currentFolder = new File(path);
         this.notes = new File(this.currentFolder.getAbsolutePath() + "\\notes.ser");
+        try {
+            if (!this.notes.exists()){
+                this.notes.createNewFile(); 
+            }
+
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
         this.serializedNote();
     }
 
@@ -132,7 +127,7 @@ public class GDFReader {
         String result="Ner Name\n"
         + "--- ----\n";
 
-        ArrayList<ER> ers = deserializedNote();
+        ArrayList<ER> ers = this.deserializedNote();
 
         for(int i=0; i < ers.size(); i++){
             result += ers.get(i).getNer() + " " + ers.get(i).getEr() + " " + ers.get(i).getNote() +"\n";
@@ -147,9 +142,24 @@ public class GDFReader {
         ArrayList<ER> ers = deserializedNote();
         for(int i=0; i < ers.size(); i++){
             if(ers.get(i).getNer() == ner){
-                ers.get(i).setNote(note);
+                ers.get(i).addNote(note);
 
                 result = "Note ajouté\n";
+            }
+        }
+        this.serializedNote(ers);
+        return result;
+    }
+
+    public String retireNote(int ner)
+    {
+        String result = null;
+        ArrayList<ER> ers = deserializedNote();
+        for(int i=0; i < ers.size(); i++){
+            if(ers.get(i).getNer() == ner){
+                ers.get(i).deleteNote();
+
+                result = "Note supprimé\n";
             }
         }
         this.serializedNote(ers);

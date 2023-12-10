@@ -5,14 +5,14 @@ import java.io.Serializable;
 public class ER implements Serializable {
     private int ner;
     private String er;
-    private String note = "";
-    private static int i=0;
+    private String note;
+    private static int I = 0;
 
-    public ER(String er)
-    {
-        i += 1;
-        this.ner = i;
+    public ER (String er) {
+        I += 1;
+        this.ner = I;
         this.er = er;
+        this.note = "";
     }
 
     public int getNer() {
@@ -23,17 +23,20 @@ public class ER implements Serializable {
         return this.er;
     }
 
-    public String getNote(){
+    public String getNote() {
         return this.note;
     }
 
-    public void setNote(String note){
-        this.note = note;
+    public void addNote(String notation) {
+        this.note = this.note + notation;
+    }
+
+    public void deleteNote() {
+        this.note = "";
     }
 
     @Override
     public String toString() {
-        return String.format("{ner: %d, er: '%s', note: '%s'}", ner, er, note);
-    }
-    
+        return String.format("{ner: %d, er: '%s', note: '%s'}", this.ner, this.er, this.note);
+    }  
 }

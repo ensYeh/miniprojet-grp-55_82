@@ -1,33 +1,19 @@
 package fr.uvsq.cprog;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+
 
 /**
  * Unit test for simple App.
  */
 public class GDFReaderTest 
 { 
-    GDFReader gdf = new GDFReader();
+    GDFReader gdf = new GDFReader("C:\\Users\\HP\\Home");
     /**
      * Rigorous Test :-)
      */
-    // @Test
-    // public void TestOfLsMethod()
-    // {
-    //     // Arrange 
-        
-    //     // Act
-    //     String res = gdf.ls_method();
-    //     String res2 = "Ner Name\n" 
-    //     + "--- ----\n"
-    //     + "1 notes.json\n"
-    //     + "2 file.txt\n";
-
-    //     // Assert
-    //     assertEquals(res, res2);
-    // }
 
     @Test
     public void TestOfMkdirMethod()

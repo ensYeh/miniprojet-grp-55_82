@@ -1,8 +1,8 @@
 package fr.uvsq.cprog;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 /**
  * Unit test for simple App.
@@ -16,12 +16,10 @@ public class GDFAppTest
     public void TestOfExecuteMethod()
     {
         // // Arrange 
-        String[] splitInput = {"ls"};
+        String[] splitInput = {"mkdir", "abdi"};
         // Act
         String res = GDFApp.execute(splitInput);
-        String res2 = "Ner Name\n" 
-        + "--- ----\n"
-        + "\nC:\\Users\\HP\\Home>";
+        String res2 = "Dossier crée avec succès\n";
         // Assert
         assertEquals(res, res2);
     }
