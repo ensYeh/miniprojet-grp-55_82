@@ -2,6 +2,7 @@ package fr.uvsq.cprog;
 
 import java.util.Scanner;
 
+
 /**
  * La Class GDFApp représente l'interface 
  * utilisateur de base et gère l'interaction 
@@ -11,10 +12,13 @@ import java.util.Scanner;
 public class GDFApp {
     public static GDFReader gdf= new GDFReader("C:\\Users\\HP\\Home");
     public static int ner;
+    public static File copiedEr;
+    public stati
     
     public static void main(String[] args)
     {
         gdf = new GDFReader(args[0]);
+        System.out.println("Si vous avez besoin d'aider taper la commande <help> !");
         while(true){
             System.out.println("\n" + gdf.getCurrentFolderPath() + ">");
             Scanner scanner = new Scanner(System.in);
@@ -28,38 +32,89 @@ public class GDFApp {
     {
         String result ="";
         
-        if(cmd[0].equals("ls")) {
+        if(cmd.length == 1 && cmd[0].equals("ls")) {
             result += gdf.ls_method();
-        
-        }else if(cmd[0].equals("mkdir")) {
+        }else if(cmd.length == 2 && cmd[0].equals("mkdir")) {
             result = gdf.mkdir_method(cmd[1]);
-        }else if(cmd[0].equals("touch")) {
+        }else if(cmd.length == 2 && cmd[0].equals("touch")) {
             result = gdf.touch_method(cmd[1]);
-        }else if(cmd[0].equals("..")){
+        }else if(cmd.length == 1 && cmd[0].equals("..")){
             gdf = gdf.remonter();
-        }else if(cmd[1].equals(".")){
-            ner = Integer.parseInt(cmd[0]);
-            if(gdf.descendre(ner) != null){
+        }else if(cmd.length == 2 && cmd[1].equals(".")){
+            try
+            {
+                ner = Integer.parseInt(cmd[0]);
+                if(gdf.descendre(ner) != null){
                 gdf = gdf.descendre(ner);
-            }else{
-                result += "Cet element n'existe pas ou NER ne désigne pas un repertoire !\n";
+                }else{
+                    result += "Cet element n'existe pas ou NER ne désigne pas un repertoire !\n";
+                }
+            } catch (NumberFormatException ex)
+            {
+                result += "Ner doit être un nombre entier";
             }
-        }else if(cmd[1].equals("visu")){
-            ner = Integer.parseInt(cmd[0]);
-            if(gdf.visu(ner) != null){
-                result += gdf.visu(ner);
-            }else{
-                result += "Cet element n'existe pas ou NER ne désigne pas un fichier !\n";
+        }else if(cmd.length == 2 && cmd[1].equals("visu")){
+            try
+            {
+                ner = Integer.parseInt(cmd[0]);
+                if(gdf.visu(ner) != null){
+                    result += gdf.visu(ner);
+                }else{
+                    result += "Cet element n'existe pas ou NER ne désigne pas un fichier !\n";
+                }
+            } catch (NumberFormatException ex)
+            {
+                result += "Ner doit être un nombre entier";
             }
-        }else if(cmd[1].equals("+")){
-            ner = Integer.parseInt(cmd[0]);
-            if(gdf.ajouterNote(ner, cmd[2]) != null){
-                result += gdf.ajouterNote(ner, cmd[2]);
-            }else{
-                result += "Ce NER n'existe pas !\n";
+        }else if(cmd.length == 2 && cmd[1].equals("-")){
+            try {
+                ner = Integer.parseInt(cmd[0]);
+                if(gdf.retireNote(ner)){
+                    result += "Note supprimé\n";
+                }else{
+                    result += "Ce NER n'existe pas !\n";
+                }
+            } catch (NumberFormatException ex) {
+                result += "Ner doit être un entier";
             }
-        }else{
-            result += "saisir une autre commande\n";
+        }else if(cmd.length > 2 && cmd[1].equals("+")){
+            try {
+                ner = Integer.parseInt(cmd[0]);
+                String concat = String.join(" ", cmd);
+                String[] concatSplit = concat.split("\"");
+                if(gdf.ajouterNote(ner, concatSplit[1])){
+                    result += "Note ajouté\n";
+                }else{
+                    result += "Ce NER n'existe pas !\n";
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                result += "Veuillez saisir le text entre guillemets";
+            }catch (NumberFormatException ex) {
+                result += "Ner doit être un entier";
+            }
+        }else if(cmd[0].equals("help")){
+            result += "Le saisie doit être sous la forme [<NER>] [<Commande>] [<Nom>].\n"
+            + "Les crochets signifient \"optionnel\"\n"
+            + "-[<Ner>] est un entier qui fait reference à un élément du repertoire courant.\n"
+            + "-Voici les [<commande>] a utilisé:\n"
+            + "\t- [<NER>] cut : permet de copier et couper un élément\n"
+            + "\t- [<NER>] copy : permet de copier un élément\n"
+            + "\t- past : permet de coller un élément\n"
+            + "\t- .. : permet de remonter au répertoire parent\n"
+            + "\t- [<NER>] . : permet de entre dans un répertoire à condition que le NER désigne un répertoire\n"
+            + "\t- mkdir [<Nom>] : permet de créer un répertoire\n"
+            + "\t- touch [<Nom>] : permet de créer un fichier\n"
+            + "\t- [<NER>] visu : permet de voir le contenu d’un fichier texte. Si le fichier n’est pas de type texte, vous afficherez sa taille \n"
+            + "\t- find [<Nom>] : permet de recherche dans toutes les sous répertoires du répertoire courant, le(s) fichier(s) et les affiches\n"
+            + "\t- ls : permet de lister les éléments du répertoire courant\n"
+            + "\t- [<NER>] + \"texte\" : le texte est ajouté ou concaténé au texte existant sur l’ER !!! NB: le texte doit être entre guillemets\n"
+            +"\t- [<NER>] - : permet de retire tout le texte associé à l’ER\n"
+            + "-Exemple :\n"
+            + " - 2 copy : permet de copie l'élément 2\n"
+            + " - mkdir mydoc: permet de créer un répertoire nommé <mydoc>\n"
+            + " - 4 + \"this is notebook\" : permet d'ajouter ou concaténer au texte existant sur l’élément 4\n";
+        } else {
+            result += "Saisie incorrect, si vous avez besoin d'aide taper la commande <help> !\n";
         }
 
         return result;

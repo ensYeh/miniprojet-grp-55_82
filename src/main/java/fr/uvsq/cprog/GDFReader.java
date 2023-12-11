@@ -15,14 +15,14 @@ public class GDFReader {
         this.notes = new File(this.currentFolder.getAbsolutePath() + "\\notes.ser");
         try {
             if (!this.notes.exists()){
-                this.notes.createNewFile(); 
+                this.notes.createNewFile();
+                this.serializedNote();
             }
 
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-        this.serializedNote();
     }
 
     public String getCurrentFolderPath()
@@ -38,8 +38,7 @@ public class GDFReader {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.notes))) {
             for(String contenu : contenus){
                 ER er = new ER(contenu);
-                elements.add(er);
-                
+                elements.add(er); 
             }
 
             oos.writeObject(elements);
@@ -72,7 +71,7 @@ public class GDFReader {
         ArrayList<ER> ers = null;
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.notes))) {
             ers = (ArrayList<ER>) ois.readObject();
-            
+            ois.close();
         } catch(ClassNotFoundException e){
             e.printStackTrace();
         }catch (IOException e) {
@@ -136,34 +135,31 @@ public class GDFReader {
         return result;
     }
 
-    public String ajouterNote(int ner, String note)
+    public boolean ajouterNote(int ner, String note)
     {
-        String result = null;
         ArrayList<ER> ers = deserializedNote();
         for(int i=0; i < ers.size(); i++){
             if(ers.get(i).getNer() == ner){
                 ers.get(i).addNote(note);
 
-                result = "Note ajouté\n";
+                this.serializedNote(ers);
+                return true;
             }
         }
-        this.serializedNote(ers);
-        return result;
+        return false;
     }
 
-    public String retireNote(int ner)
+    public boolean retireNote(int ner)
     {
-        String result = null;
         ArrayList<ER> ers = deserializedNote();
         for(int i=0; i < ers.size(); i++){
             if(ers.get(i).getNer() == ner){
                 ers.get(i).deleteNote();
-
-                result = "Note supprimé\n";
+                this.serializedNote(ers);
+                return true;
             }
         }
-        this.serializedNote(ers);
-        return result;
+        return false;
     }
 
     public GDFReader remonter()
@@ -184,6 +180,7 @@ public class GDFReader {
                     String path = this.getCurrentFolderPath() + "\\" + ers.get(i).getEr();
                     gdfChild = new GDFReader(path);
                 }
+                break;
             }
         }
         return gdfChild;

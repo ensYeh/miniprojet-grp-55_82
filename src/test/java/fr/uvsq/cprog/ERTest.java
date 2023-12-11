@@ -9,14 +9,15 @@ import org.junit.jupiter.api.*;
  */
 public class ERTest 
 {  
+    // Arrange
+    ER er = new ER("document");
+    
     /**
      * Rigorous Test :-)
      */
     @Test
     public void TestAddNote()
     {
-        // Arrange
-        ER er = new ER("document");
         // Act
         er.addNote("this is document");
         String res = er.getNote();
@@ -25,10 +26,35 @@ public class ERTest
         assertEquals(res, res2);
     }
 
-    // @Test
-    // public void TestDeleteNote()
-    // {
+    @Test
+    public void TestGetNote()
+    {
+        // Act
+        String res = er.getNote();
+        String res2 = "";
+        // Assert
+        assertEquals(res, res2);
+    }
 
-    // }
+    @Test
+    public void TestDeleteNote()
+    {
+        // Act
+        er.deleteNote();
+        String res = er.getNote();
+        String res2 = "";
+        // Assert
+        assertEquals(res, res2);
+    }
+
+    @Test
+    public void TestToString()
+    {
+        // Act
+        String res = er.toString();
+        String res2 = "{ner: 1, er: 'document', note: ''}";
+        // Assert
+        assertEquals(res, res2);
+    }
     
 }

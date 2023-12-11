@@ -10,7 +10,9 @@ import org.junit.jupiter.api.*;
  */
 public class GDFReaderTest 
 { 
+    // Arrange
     GDFReader gdf = new GDFReader("C:\\Users\\HP\\Home");
+
     /**
      * Rigorous Test :-)
      */
@@ -18,8 +20,6 @@ public class GDFReaderTest
     @Test
     public void TestOfMkdirMethod()
     {
-        // Arrange 
-        
         // Act
         String res = gdf.mkdir_method("Doc");
 
@@ -32,8 +32,6 @@ public class GDFReaderTest
     @Test
     public void TestOfTouchMethod()
     {
-        // Arrange 
-        
         // Act
         String res = gdf.touch_method("file.txt");
 
@@ -43,6 +41,13 @@ public class GDFReaderTest
         assertEquals(res, res2);
     }
 
-    
+    @Test
+    public void TestAjouterNote()
+    {
+        // Act
+        boolean res = gdf.ajouterNote(1, "fichier note");
+        // Assert
+        assertEquals(res, false);
+    }    
     
 }
