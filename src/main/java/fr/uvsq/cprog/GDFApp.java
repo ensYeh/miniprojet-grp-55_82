@@ -2,6 +2,10 @@ package fr.uvsq.cprog;
 
 import java.util.Scanner;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+
 
 /**
  * La Class GDFApp représente l'interface 
@@ -10,22 +14,27 @@ import java.util.Scanner;
  *
  */
 public class GDFApp {
-    public static GDFReader gdf= new GDFReader("C:\\Users\\HP\\Home");
+    public static GDFReader currentRep= new GDFReader("C:\\Users\\HP\\Home");
     public static int ner;
-    public static File copiedEr;
-    public stati
     
     public static void main(String[] args)
     {
-        gdf = new GDFReader(args[0]);
+        currentRep = new GDFReader(args[0]);
         System.out.println("Si vous avez besoin d'aider taper la commande <help> !");
         while(true){
-            System.out.println("\n" + gdf.getCurrentFolderPath() + ">");
+            System.out.println("\n" + currentRep.getCurrentFolderPath() + ner + ">");
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
             String[] splitInput = input.split(" ");
+            if (splitInput[0].equals("exit"))   break;
             System.out.println(execute(splitInput));
         }
+    }
+
+    public static void setCurrentRep(String path)
+    {
+        GDFReader gdfChange = new GDFReader(path);
+        currentRep = gdfChange;
     }
 
     public static String execute(String[] cmd)
@@ -33,19 +42,19 @@ public class GDFApp {
         String result ="";
         
         if(cmd.length == 1 && cmd[0].equals("ls")) {
-            result += gdf.ls_method();
+            result += currentRep.ls_method();
         }else if(cmd.length == 2 && cmd[0].equals("mkdir")) {
-            result = gdf.mkdir_method(cmd[1]);
+            result = currentRep.mkdir_method(cmd[1]);
         }else if(cmd.length == 2 && cmd[0].equals("touch")) {
-            result = gdf.touch_method(cmd[1]);
+            result = currentRep.touch_method(cmd[1]);
         }else if(cmd.length == 1 && cmd[0].equals("..")){
-            gdf = gdf.remonter();
+            currentRep = currentRep.remonter();
         }else if(cmd.length == 2 && cmd[1].equals(".")){
             try
             {
                 ner = Integer.parseInt(cmd[0]);
-                if(gdf.descendre(ner) != null){
-                gdf = gdf.descendre(ner);
+                if(currentRep.descendre(ner) != null){
+                    currentRep = currentRep.descendre(ner);
                 }else{
                     result += "Cet element n'existe pas ou NER ne désigne pas un repertoire !\n";
                 }
@@ -53,12 +62,18 @@ public class GDFApp {
             {
                 result += "Ner doit être un nombre entier";
             }
+        }else if(cmd.length == 1 && cmd[0].equals(".")){
+            if(currentRep.descendre(ner) != null){
+                currentRep = currentRep.descendre(ner);
+            }else{
+                result += "Cet element n'existe pas ou NER ne désigne pas un repertoire !\n";
+            }
         }else if(cmd.length == 2 && cmd[1].equals("visu")){
             try
             {
                 ner = Integer.parseInt(cmd[0]);
-                if(gdf.visu(ner) != null){
-                    result += gdf.visu(ner);
+                if(currentRep.visu(ner) != null){
+                    result += currentRep.visu(ner);
                 }else{
                     result += "Cet element n'existe pas ou NER ne désigne pas un fichier !\n";
                 }
@@ -66,10 +81,18 @@ public class GDFApp {
             {
                 result += "Ner doit être un nombre entier";
             }
-        }else if(cmd.length == 2 && cmd[1].equals("-")){
+        } else if(cmd.length == 1 && cmd[0].equals("visu")){
+            if(currentRep.visu(ner) != null){
+                result += currentRep.visu(ner);
+            }else{
+                result += "Cet element n'existe pas ou NER ne désigne pas un fichier !\n";
+            }
+        } else if (cmd.length == 2 && cmd[0].equals("find")) {
+            result += currentRep.find(cmd[1]);
+        } else if (cmd.length == 2 && cmd[1].equals("-")) {
             try {
                 ner = Integer.parseInt(cmd[0]);
-                if(gdf.retireNote(ner)){
+                if(currentRep.retireNote(ner)){
                     result += "Note supprimé\n";
                 }else{
                     result += "Ce NER n'existe pas !\n";
@@ -77,12 +100,18 @@ public class GDFApp {
             } catch (NumberFormatException ex) {
                 result += "Ner doit être un entier";
             }
-        }else if(cmd.length > 2 && cmd[1].equals("+")){
+        } else if (cmd.length == 1 && cmd[0].equals("-")) {
+            if(currentRep.retireNote(ner)){
+                result += "Note supprimé\n";
+            }else{
+                result += "Ce NER n'existe pas !\n";
+            }
+        } else if(cmd.length > 2 && cmd[1].equals("+")){
             try {
                 ner = Integer.parseInt(cmd[0]);
                 String concat = String.join(" ", cmd);
                 String[] concatSplit = concat.split("\"");
-                if(gdf.ajouterNote(ner, concatSplit[1])){
+                if(currentRep.ajouterNote(ner, concatSplit[1])){
                     result += "Note ajouté\n";
                 }else{
                     result += "Ce NER n'existe pas !\n";
@@ -92,11 +121,23 @@ public class GDFApp {
             }catch (NumberFormatException ex) {
                 result += "Ner doit être un entier";
             }
-        }else if(cmd[0].equals("help")){
+        } else if(cmd.length > 1 && cmd[0].equals("+")){
+            try {
+                String concat = String.join(" ", cmd);
+                String[] concatSplit = concat.split("\"");
+                if(currentRep.ajouterNote(ner, concatSplit[1])){
+                    result += "Note ajouté\n";
+                }else{
+                    result += "Ce NER n'existe pas !\n";
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                result += "Veuillez saisir le text entre guillemets";
+            }
+        } else if(cmd[0].equals("help")){
             result += "Le saisie doit être sous la forme [<NER>] [<Commande>] [<Nom>].\n"
             + "Les crochets signifient \"optionnel\"\n"
-            + "-[<Ner>] est un entier qui fait reference à un élément du repertoire courant.\n"
-            + "-Voici les [<commande>] a utilisé:\n"
+            + "-[<Ner>] doit être un entier qui fait reference à un élément du repertoire courant.\n"
+            + "-Voici les [<commande>] a utilisé sont :\n"
             + "\t- [<NER>] cut : permet de copier et couper un élément\n"
             + "\t- [<NER>] copy : permet de copier un élément\n"
             + "\t- past : permet de coller un élément\n"

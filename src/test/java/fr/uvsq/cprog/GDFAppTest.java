@@ -2,6 +2,7 @@ package fr.uvsq.cprog;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 
 /**
@@ -15,7 +16,8 @@ public class GDFAppTest
     @Test
     public void TestOfExecuteMethod()
     {
-        // // Arrange 
+        GDFApp.setCurrentRep(FileUtils.getUserDirectoryPath());
+        // Arrange 
         String[] splitInput = {"mkdir", "abdi"};
         // Act
         String res = GDFApp.execute(splitInput);

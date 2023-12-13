@@ -1,1 +1,98 @@
-Documentation (Description) du projet(Gestionnaire de fichier)
+= Documentation de l'Application Gestionnaire des fichiers
+
+== 1. Introduction
+
+L'application est une interface en ligne de commande permettant aux utilisateurs de gérer un système de fichiers. Cette application offre des fonctionnalités de base telles que la navigation dans les répertoires, la création de répertoires, la copie, la visualisation de fichiers texte, et la gestion des annotations associées à chaque élément du répertoire.
+
+== 2. Prérequis
+
+Les prérequis comprennent une installation de JDK au moins version 17 sur le système.
+
+== 3. Utilisation
+
+=== 3.1 Manuel utilisateur
+
+=== 3.2 Manuel technique
+.Sous Linux
+----
+$ ./mvnw package
+----
+
+.Sous Windows
+----
+> mvnw.cmd package
+----
+
+=== Exécuter l'application
+----
+$ java -jar target/explorer-1.0.jar "Chemin_de_répertorie"
+----
+
+*NB: Pour exécuter l'application, il est indisponsable de spécifier le chemin de répertoire courant lors de l'exécution.*
+
+=== 3.3 Commandes Disponibles
+
+L'utilisateur peut saisir différentes commandes pour interagir avec l'application. Les commandes disponibles sont les suivantes:
+
+- `[<NER>] copy`: Copie l'élément spécifié avec une possible concaténation du suffixe "-copy" au nom.
+
+- `[<NER>] cut`: Découpe l'élément spécifié.
+
+- `[<NER>] ..`: Remonte d'un niveau dans le système de fichiers.
+
+- `[<NER>] .`: Entre dans un répertoire spécifié.
+
+- `mkdir <nom>`: Crée un nouveau répertoire avec le nom spécifié.
+
+- `[<NER>] visu`: Visualise le contenu d'un fichier texte ou affiche la taille si le fichier n'est pas texte.
+
+- `find <nom fichier>`: Recherche le fichier spécifié dans tous les sous-répertoires du répertoire courant.
+
+- `<NER> + "<texte>"`: Ajoute ou concatène du texte à l'annotation associée à l'élément spécifié.
+
+- `<NER> -`: Retire toute annotation associée à l'élément spécifié.
+
+== 4. Exemples d'Utilisation
+
+1. Copier un fichier:
+
+[source, bash]
+----
+3 copy
+----
+
+2. Créer un répertoire:
+
+[source, bash]
+----
+mkdir NouveauRepertoire
+----
+
+3. Visualiser le contenu d'un fichier ou afficher sa taille:
+
+[source, bash]
+----
+4 visu
+----
+
+4. Annoter un élément:
+
+[source, bash]
+----
+2 + "Ceci est une annotation"
+----
+
+== 5. Bibliothèque utilisées
+
+* JUnit 5 : JUnit 5 offre de nombreuses améliorations et nouvelles fonctionnalités par rapport à JUnit 4, facilitant ainsi la création et la maintenance des tests unitaires dans vos projets Java. Parmi ces fonctionnalités, y'en a une qui permet de faire des tests avec des arguments différentes.
+
+* Apache Commons IO : La bibliothèque Apache Commons IO de Java fournit des utilitaires pour effectuer des opérations courantes liées à l'entrée/sortie (E/S) dans le langage Java. Cette bibliothèque est particulièrement utile pour simplifier et améliorer la gestion des opérations de fichiers, de flux et d'autres tâches liées à la manipulation de données.
+
+* Checkstyle : Checkstyle est un outil statique d'analyse de code en Java qui permet de garantir que le code source respecte un ensemble de conventions et de règles de codage.
+
+== 6. Conclusion
+
+L'application GDF offre une interface simple mais puissante pour gérer un système de fichiers virtuel. Elle peut être étendue avec des fonctionnalités supplémentaires en fonction des besoins de l'utilisateur.
+
+Pour des informations détaillées sur chaque commande, consultez la section correspondante dans la documentation.
+

@@ -1,9 +1,9 @@
 package fr.uvsq.cprog;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
+
+import com.google.common.io.*;
 public class GDFReader {
     private File currentFolder;
     private File notes;
@@ -12,7 +12,7 @@ public class GDFReader {
     GDFReader (String path)
     {
         this.currentFolder = new File(path);
-        this.notes = new File(this.currentFolder.getAbsolutePath() + "\\notes.ser");
+        this.notes = new File(path + "\\notes.ser");
         try {
             if (!this.notes.exists()){
                 this.notes.createNewFile();
@@ -22,7 +22,7 @@ public class GDFReader {
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
-        }
+        } 
     }
 
     public String getCurrentFolderPath()
@@ -73,7 +73,7 @@ public class GDFReader {
             ers = (ArrayList<ER>) ois.readObject();
             ois.close();
         } catch(ClassNotFoundException e){
-            e.printStackTrace();
+            serializedNote();
         }catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -221,6 +221,56 @@ public class GDFReader {
         return result;
     }
 
-    
+    public File search(File directory, String fileName)
+    {
+        File myfile = null;
+
+        // get all the files from a directory
+        File[] fList = directory.listFiles();
+        ArrayList<File> files = new  ArrayList<File>();
+        if (fList != null) {
+            for (File file : fList) {
+                if (file.isFile()) {
+                    files.add(file);
+                } else if (file.isDirectory()) {
+                    myfile =this.search(file, fileName);
+                }
+            }
+        }
+
+        for (File file : files) {
+            if(file.getName().equals(fileName)) {
+                myfile = file;
+                break;
+            }
+        }
+
+        return myfile;
+    }
+
+    public String find(String name)
+    {
+        String result= "";
+        if (this.search(this.currentFolder, name) == null) {
+            return "Fichier non trouvé !\n";
+        }
+
+        File file = this.search(this.currentFolder, name);
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            result = "";
+            while ((line = reader.readLine()) != null) {
+                result += line + "\n";
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
     
 }
