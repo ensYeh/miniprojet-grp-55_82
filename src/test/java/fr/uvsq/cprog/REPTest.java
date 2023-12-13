@@ -11,10 +11,10 @@ import org.junit.jupiter.api.*;
 /**
  * Unit test for simple App.
  */
-public class GDFReaderTest 
+public class REPTest 
 { 
     // Arrange
-    GDFReader gdf = new GDFReader(FileUtils.getUserDirectoryPath());
+    REP gdf = new REP(FileUtils.getUserDirectoryPath());
 
     /**
      * Rigorous Test :-)
@@ -85,7 +85,7 @@ public class GDFReaderTest
         Thread.sleep(4000);
         // Act
         String res = gdf.mkdir_method("Fol");
-        gdf = new GDFReader(FileUtils.getUserDirectoryPath() + "\\Fol");
+        gdf = new REP(FileUtils.getUserDirectoryPath() + "\\Fol");
         // Assert
         assertEquals(gdf.remonter().getCurrentFolderPath(), FileUtils.getUserDirectoryPath());
     }

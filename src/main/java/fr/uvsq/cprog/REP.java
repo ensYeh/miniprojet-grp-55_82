@@ -4,12 +4,12 @@ import java.io.*;
 import java.util.*;
 
 import com.google.common.io.*;
-public class GDFReader {
+public class REP {
     private File currentFolder;
     private File notes;
     
 
-    GDFReader (String path)
+    REP (String path)
     {
         this.currentFolder = new File(path);
         this.notes = new File(path + "\\notes.ser");
@@ -162,23 +162,23 @@ public class GDFReader {
         return false;
     }
 
-    public GDFReader remonter()
+    public REP remonter()
     {
         String path = this.currentFolder.getParent();
-        GDFReader gdfParent = new GDFReader(path);
+        REP gdfParent = new REP(path);
         return gdfParent;
     }
 
-    public GDFReader descendre(int ner)
+    public REP descendre(int ner)
     {
         ArrayList<ER> ers = deserializedNote();
-        GDFReader gdfChild = null;
+        REP gdfChild = null;
         for(int i=0; i < ers.size() ; i++){
             if(ers.get(i).getNer() == ner){
                 File theDir = new File(this.getCurrentFolderPath() + "\\" + ers.get(i).getEr());
                 if(theDir.isDirectory()){
                     String path = this.getCurrentFolderPath() + "\\" + ers.get(i).getEr();
-                    gdfChild = new GDFReader(path);
+                    gdfChild = new REP(path);
                 }
                 break;
             }

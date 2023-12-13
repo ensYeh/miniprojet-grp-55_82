@@ -14,12 +14,12 @@ import java.io.File;
  *
  */
 public class GDFApp {
-    public static GDFReader currentRep= new GDFReader("C:\\Users\\HP\\Home");
+    public static REP currentRep= new REP("C:\\Users\\HP\\Home");
     public static int ner;
     
     public static void main(String[] args)
     {
-        currentRep = new GDFReader(args[0]);
+        currentRep = new REP(args[0]);
         System.out.println("Si vous avez besoin d'aider taper la commande <help> !");
         while(true){
             System.out.println("\n" + currentRep.getCurrentFolderPath() + ner + ">");
@@ -33,7 +33,7 @@ public class GDFApp {
 
     public static void setCurrentRep(String path)
     {
-        GDFReader gdfChange = new GDFReader(path);
+        REP gdfChange = new REP(path);
         currentRep = gdfChange;
     }
 
