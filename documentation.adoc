@@ -1,4 +1,4 @@
-= Documentation de l'Application Gestionnaire des fichiers
+= Documentation de l'Application gestionnaire des fichiers
 
 == 1. Introduction
 
@@ -25,10 +25,10 @@ $ ./mvnw package
 
 === Exécuter l'application
 ----
-$ java -jar target/explorer-1.0.jar "Chemin_de_répertorie"
+$ java -jar target/explorer-1.0-SNAPSHOT.jar "Chemin_de_répertorie"
 ----
 
-*NB: Pour exécuter l'application, il est indisponsable de spécifier le chemin de répertoire courant lors de l'exécution.*
+*NB: Pour exécuter l'application, il est indisponsable de spécifier le chemin de répertoire courant ou celui de votre choix.*
 
 === 3.3 Commandes Disponibles
 
@@ -68,7 +68,7 @@ L'utilisateur peut saisir différentes commandes pour interagir avec l'applicati
 mkdir NouveauRepertoire
 ----
 
-3. Visualiser le contenu d'un fichier ou afficher sa taille:
+3. Visualiser le contenu d'un fichier, s'il est de type "text" sinon afficher sa taille:
 
 [source, bash]
 ----
