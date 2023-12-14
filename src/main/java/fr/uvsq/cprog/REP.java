@@ -272,5 +272,22 @@ public class REP {
 
         return result;
     }
+
+    public File copy(int ner)
+    {
+        File file = null;
+        ArrayList<ER> listElement = this.deserializedNote();
+        for (int i = 0; i<listElement.size(); i++){
+            if(listElement.get(i).getNer() == ner) {
+                file = new File(listElement.get(i).getEr());
+                return file;   
+            }
+            break;
+        }
+
+        return file;
+
+    }
+    
     
 }
