@@ -8,22 +8,20 @@ import org.junit.jupiter.api.*;
 /**
  * Unit test for simple App.
  */
-public class GDFAppTest 
-{  
+public class GdfAppTest {
     /**
-     * Rigorous Test :-)
+     * Rigorous Test 
      */
     @Test
-    public void TestOfExecuteMethod()
-    {
-        GDFApp.setCurrentRep(FileUtils.getUserDirectoryPath());
-        // Arrange 
-        String[] splitInput = {"mkdir", "abdi"};
+    public void TestOfExecuteMethod() {
+        GdfApp.setCurrentRep(FileUtils.getUserDirectoryPath());
+        // Arrange
+        String[] splitInput = { "mkdir", "abdi" };
         // Act
-        String res = GDFApp.execute(splitInput);
+        String res = GdfApp.execute(splitInput);
         String res2 = "Dossier crée avec succès\n";
         // Assert
         assertEquals(res, res2);
     }
-    
+
 }

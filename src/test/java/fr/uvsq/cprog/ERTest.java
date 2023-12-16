@@ -5,19 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.*;
 
 /**
- * Unit test for simple App.
+ * Unit test for class Er.
  */
-public class ERTest 
-{  
+public class ErTest {
     // Arrange
-    ER er = new ER("document");
-    
+    Er er = new Er(1, "document");
+
     /**
-     * Rigorous Test :-)
+     * Test de la méthode ajouter note.
      */
     @Test
-    public void TestAddNote()
-    {
+    public void TestAddNote() {
         // Act
         er.addNote("this is document");
         String res = er.getNote();
@@ -26,9 +24,11 @@ public class ERTest
         assertEquals(res, res2);
     }
 
+    /**
+     * Test de la méthode retourner note.
+     */
     @Test
-    public void TestGetNote()
-    {
+    public void TestGetNote() {
         // Act
         String res = er.getNote();
         String res2 = "";
@@ -36,9 +36,11 @@ public class ERTest
         assertEquals(res, res2);
     }
 
+    /**
+     * Test de la méthode supprimer note.
+     */
     @Test
-    public void TestDeleteNote()
-    {
+    public void TestDeleteNote() {
         // Act
         er.deleteNote();
         String res = er.getNote();
@@ -47,14 +49,16 @@ public class ERTest
         assertEquals(res, res2);
     }
 
+    /**
+     * Test de la méthode toString.
+     */
     @Test
-    public void TestToString()
-    {
+    public void TestToString() {
         // Act
         String res = er.toString();
         String res2 = "{ner: 1, er: 'document', note: ''}";
         // Assert
         assertEquals(res, res2);
     }
-    
+
 }

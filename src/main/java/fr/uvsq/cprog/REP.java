@@ -1,20 +1,37 @@
 package fr.uvsq.cprog;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
-import com.google.common.io.*;
-public class REP {
+/**
+ * La Class Rep représente le répertoire courant
+ * et contient des méthodes qui permet de faires des traitements
+ * précise sur un répertoire, par exemple créer des fichier.
+ *
+ */
+public class Rep {
+    /**
+     * Les attributs.
+     */
     private File currentFolder;
     private File notes;
-    
 
-    REP (String path)
-    {
+    /**
+     * Constructeur.
+     */
+    Rep(String path) {
         this.currentFolder = new File(path);
         this.notes = new File(path + "\\notes.ser");
         try {
-            if (!this.notes.exists()){
+            if (!this.notes.exists()) {
                 this.notes.createNewFile();
                 this.serializedNote();
             }
@@ -22,29 +39,37 @@ public class REP {
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
-        } 
+        }
     }
 
-    public String getCurrentFolderPath()
-    {
+    /**
+     * Cette méthode retourner le chemin du répertoire.
+     * 
+     */
+    public String getCurrentFolderPath() {
         return this.currentFolder.getAbsolutePath();
     }
 
-    // On monte les fichiers déjà existant dans le fichier notes.ser avec l'association du NER pour chaque ER
-    public void serializedNote()
-    {
+    /**
+     * Cette méthode permet de serialiser 
+     * les éléments déjà existant dans le répertoire.
+     * 
+     */
+    public void serializedNote() {
         String[] contenus = this.currentFolder.list();
-        ArrayList<ER> elements = new ArrayList<ER>();
+        ArrayList<Er> elements = new ArrayList<Er>();
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.notes))) {
-            for(String contenu : contenus){
-                ER er = new ER(contenu);
-                elements.add(er); 
+            int ner = 0;
+            for (String contenu : contenus) {
+                ner += 1;
+                Er er = new Er(ner, contenu);
+                elements.add(er);
             }
 
             oos.writeObject(elements);
             oos.close();
-            
-        } catch (FileNotFoundException e){
+
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             System.out.println("An error occurred.");
@@ -52,13 +77,17 @@ public class REP {
         }
     }
 
-    public void serializedNote(ArrayList<ER> ers)
-    {
+    /**
+     * Cette méthode permet de permet de sérialiser 
+     * une liste des objet Er données.
+     * 
+     */
+    public void serializedNote(ArrayList<Er> ers) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.notes))) {
             oos.writeObject(ers);
             oos.close();
-            
-        } catch (FileNotFoundException e){
+
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             System.out.println("An error occurred.");
@@ -66,15 +95,19 @@ public class REP {
         }
     }
 
-    public ArrayList<ER> deserializedNote()
-    {
-        ArrayList<ER> ers = null;
+    /**
+     * Cette méthode permet de desérialiser le fichie note
+     * qui contient les objets sérialiser dans le fichier note.ser.
+     * 
+     */
+    public ArrayList<Er> deserializedNote() {
+        ArrayList<Er> ers = null;
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.notes))) {
-            ers = (ArrayList<ER>) ois.readObject();
+            ers = (ArrayList<Er>) ois.readObject();
             ois.close();
-        } catch(ClassNotFoundException e){
+        } catch (ClassNotFoundException e) {
             serializedNote();
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
@@ -82,33 +115,39 @@ public class REP {
         return ers;
     }
 
-    public String mkdir_method(String name)
-    {
-        File theDir = new File(this.currentFolder.getAbsolutePath()+"\\"+name);
-        if (!theDir.exists()){
+    /**
+     * Cette méthode permet de créer un répertoire dans le répertoire courant.
+     * 
+     */
+    public String mkdir_method(String name) {
+        File theDir = new File(this.currentFolder.getAbsolutePath() + "\\" + name);
+        if (!theDir.exists()) {
             theDir.mkdirs();
-            ArrayList<ER> ers = this.deserializedNote();
-            ER er = new ER(name);
+            ArrayList<Er> ers = this.deserializedNote();
+            Er er = new Er(ers.get(ers.size() - 1).getNer() + 1, name);
             ers.add(er);
             this.serializedNote(ers);
             return "Dossier crée avec succès\n";
-        }else{
+        } else {
             return "Ce dossier existe deja !\n";
         }
 
     }
-    
-    public String touch_method(String name)
-    {
-        File theFile = new File(this.currentFolder.getAbsolutePath()+"\\"+name);
+
+    /**
+     * Cette méthode permet de créer un fichier dans le répertoire courant.
+     * 
+     */
+    public String touch_method(String name) {
+        File theFile = new File(this.currentFolder.getAbsolutePath() + "\\" + name);
         try {
-            if (!theFile.exists()){
+            if (!theFile.exists()) {
                 theFile.createNewFile();
-                ArrayList<ER> ers = this.deserializedNote();
-                ER er = new ER(name);
+                ArrayList<Er> ers = this.deserializedNote();
+                Er er = new Er(ers.get(ers.size() - 1).getNer() + 1, name);
                 ers.add(er);
-                this.serializedNote(ers);  
-            }else{
+                this.serializedNote(ers);
+            } else {
                 return "Ce fichier existe deja !\n";
             }
 
@@ -121,25 +160,34 @@ public class REP {
 
     }
 
-    public String ls_method() 
-    {
-        String result="Ner Name\n"
-        + "--- ----\n";
+    /**
+     * En utilisant la méthode desérialisation, 
+     * cette méthode permet de lister les éléments du répertoire courant.
+     * 
+     */
+    public String ls_method() {
+        String result = "Ner Name\n"
+                + "--- ----\n";
 
-        ArrayList<ER> ers = this.deserializedNote();
+        ArrayList<Er> ers = this.deserializedNote();
 
-        for(int i=0; i < ers.size(); i++){
-            result += ers.get(i).getNer() + " " + ers.get(i).getEr() + " " + ers.get(i).getNote() +"\n";
+        for (int i = 0; i < ers.size(); i++) {
+            result += ers.get(i).getNer() + " " + ers.get(i).getEr() 
+                + " " + ers.get(i).getNote() + "\n";
         }
-            
+
         return result;
     }
 
-    public boolean ajouterNote(int ner, String note)
-    {
-        ArrayList<ER> ers = deserializedNote();
-        for(int i=0; i < ers.size(); i++){
-            if(ers.get(i).getNer() == ner){
+    /**
+     * Cette méthode permet d'ajouter ou concaténer une note à 
+     * un élément donnée du répertoire courant.
+     * 
+     */
+    public boolean ajouterNote(int ner, String note) {
+        ArrayList<Er> ers = deserializedNote();
+        for (int i = 0; i < ers.size(); i++) {
+            if (ers.get(i).getNer() == ner) {
                 ers.get(i).addNote(note);
 
                 this.serializedNote(ers);
@@ -149,11 +197,15 @@ public class REP {
         return false;
     }
 
-    public boolean retireNote(int ner)
-    {
-        ArrayList<ER> ers = deserializedNote();
-        for(int i=0; i < ers.size(); i++){
-            if(ers.get(i).getNer() == ner){
+    /**
+     * Cette méthode permet de retire le note d'un élément
+     * donnée du répertoire courant.
+     * 
+     */
+    public boolean retireNote(int ner) {
+        ArrayList<Er> ers = deserializedNote();
+        for (int i = 0; i < ers.size(); i++) {
+            if (ers.get(i).getNer() == ner) {
                 ers.get(i).deleteNote();
                 this.serializedNote(ers);
                 return true;
@@ -162,23 +214,29 @@ public class REP {
         return false;
     }
 
-    public REP remonter()
-    {
+    /**
+     * Cette méthode permet de rémonter au répertoire parent du répertoire courant.
+     * 
+     */
+    public Rep remonter() {
         String path = this.currentFolder.getParent();
-        REP gdfParent = new REP(path);
+        Rep gdfParent = new Rep(path);
         return gdfParent;
     }
 
-    public REP descendre(int ner)
-    {
-        ArrayList<ER> ers = deserializedNote();
-        REP gdfChild = null;
-        for(int i=0; i < ers.size() ; i++){
-            if(ers.get(i).getNer() == ner){
+    /**
+     * Cette méthode permet de changer répertoire.
+     * 
+     */
+    public Rep descendre(int ner) {
+        ArrayList<Er> ers = deserializedNote();
+        Rep gdfChild = null;
+        for (int i = 0; i < ers.size(); i++) {
+            if (ers.get(i).getNer() == ner) {
                 File theDir = new File(this.getCurrentFolderPath() + "\\" + ers.get(i).getEr());
-                if(theDir.isDirectory()){
+                if (theDir.isDirectory()) {
                     String path = this.getCurrentFolderPath() + "\\" + ers.get(i).getEr();
-                    gdfChild = new REP(path);
+                    gdfChild = new Rep(path);
                 }
                 break;
             }
@@ -186,17 +244,20 @@ public class REP {
         return gdfChild;
     }
 
-    public String visu(int ner)
-    {
+    /**
+     * Cette méthode permet d'afficher le contenu d'un fichier.
+     * 
+     */
+    public String visu(int ner) {
         String result = null;
-        ArrayList<ER> ers = deserializedNote();
-        for(int i=0; i < ers.size() ; i++){
-            if(ers.get(i).getNer() == ner){
+        ArrayList<Er> ers = deserializedNote();
+        for (int i = 0; i < ers.size(); i++) {
+            if (ers.get(i).getNer() == ner) {
                 File theFile = new File(this.getCurrentFolderPath() + "\\" + ers.get(i).getEr());
-                if(!theFile.isDirectory()){
+                if (!theFile.isDirectory()) {
 
                     String ext = ers.get(i).getEr().split("\\.")[1];
-                    if(ext.equals("txt")){
+                    if (ext.equals("txt")) {
                         try {
                             BufferedReader reader = new BufferedReader(new FileReader(theFile));
                             String line;
@@ -204,42 +265,46 @@ public class REP {
                             while ((line = reader.readLine()) != null) {
                                 result += line + "\n";
                             }
-                
+
                             reader.close();
                         } catch (IOException e) {
                             e.printStackTrace();
-                        } 
-                    }else{
-                        result = "Length : "+ Long.toString(theFile.length()) + "\n";
+                        }
+                    } else {
+                        result = "Length : " + Long.toString(theFile.length()) + "\n";
                     }
-                    
+
                 }
-                
+
             }
         }
 
         return result;
     }
 
-    public File search(File directory, String fileName)
-    {
+    /**
+     * Cette méthode permet de recherche un fichier dans répertoire 
+     * et dans tous ces sous-répertoire.
+     * 
+     */
+    public File search(File directory, String fileName) {
         File myfile = null;
 
         // get all the files from a directory
-        File[] fList = directory.listFiles();
-        ArrayList<File> files = new  ArrayList<File>();
-        if (fList != null) {
-            for (File file : fList) {
+        File[] fileList = directory.listFiles();
+        ArrayList<File> files = new ArrayList<File>();
+        if (fileList != null) {
+            for (File file : fileList) {
                 if (file.isFile()) {
                     files.add(file);
                 } else if (file.isDirectory()) {
-                    myfile =this.search(file, fileName);
+                    myfile = this.search(file, fileName);
                 }
             }
         }
 
         for (File file : files) {
-            if(file.getName().equals(fileName)) {
+            if (file.getName().equals(fileName)) {
                 myfile = file;
                 break;
             }
@@ -248,9 +313,13 @@ public class REP {
         return myfile;
     }
 
-    public String find(String name)
-    {
-        String result= "";
+    /**
+     * En utilisant la méthode search précedent,
+     * si le fichier est trouvé alors cette méthode l'affiche.
+     * 
+     */
+    public String find(String name) {
+        String result = "";
         if (this.search(this.currentFolder, name) == null) {
             return "Fichier non trouvé !\n";
         }
@@ -272,5 +341,5 @@ public class REP {
 
         return result;
     }
-    
+
 }
