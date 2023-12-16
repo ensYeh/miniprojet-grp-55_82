@@ -288,6 +288,25 @@ public class REP {
         return file;
 
     }
-    
+    public void cut(int ner)
+    {
+        ArrayList<ER> listElement = this.deserializedNote();
+           int indexner = 0;
+        for ( indexner = 0; indexner<listElement.size(); indexner++){
+            if (listElement.get(indexner).getNer() == ner) {
+
+                ER cutElement= listElement.remove(indexner);
+                System.out.println("file moved successfully: " + cutElement);
+
+                break;
+            }
+            if(indexner == listElement.size()) {
+             
+                System.out.println("error moving file: file not found");
+            }
+                
+        }
+
+    }   
     
 }
