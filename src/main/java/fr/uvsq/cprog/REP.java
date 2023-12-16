@@ -342,4 +342,43 @@ public class Rep {
         return result;
     }
 
+<<<<<<< HEAD
+=======
+    public File copy(int ner)
+    {
+        File file = null;
+        ArrayList<ER> listElement = this.deserializedNote();
+        for (int i = 0; i<listElement.size(); i++){
+            if(listElement.get(i).getNer() == ner) {
+                file = new File(listElement.get(i).getEr());
+                return file;   
+            }
+            break;
+        }
+
+        return file;
+
+    }
+    public void cut(int ner)
+    {
+        ArrayList<ER> listElement = this.deserializedNote();
+           int indexner = 0;
+        for ( indexner = 0; indexner<listElement.size(); indexner++){
+            if (listElement.get(indexner).getNer() == ner) {
+
+                ER cutElement= listElement.remove(indexner);
+                System.out.println("file moved successfully: " + cutElement);
+
+                break;
+            }
+            if(indexner == listElement.size()) {
+             
+                System.out.println("error moving file: file not found");
+            }
+                
+        }
+
+    }   
+    
+>>>>>>> 061bfe91b3211da51fd90c21208b47166a140449
 }
