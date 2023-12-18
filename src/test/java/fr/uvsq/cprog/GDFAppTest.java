@@ -52,24 +52,4 @@ public class GdfAppTest {
         }
     }
 
-    /**
-     * Rigorous Test for those commands that do require NER.
-     */
-    // @ParameterizedTest
-    // @CsvSource({
-    //     "1000 ., null",
-    //     "1000 visu, ",
-    //     "1000 + \"this is my element\", ",
-    //     "1000 -, "
-    // })
-    // public void TestOfExecuMethodWithNer(String saisie, String exceptedResult) {
-    //     // Arrange
-    //     GdfApp.setCurrentRep(FileUtils.getUserDirectoryPath());
-    //     String[] splitInput = saisie.split(" ");
-    //     // Act
-    //     String res = GdfApp.execute(splitInput);
-    //     // Assert
-    //     assertEquals(res, exceptedResult);
-    // }
-
 }
