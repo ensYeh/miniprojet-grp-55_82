@@ -1,5 +1,6 @@
 package fr.uvsq.cprog;
 
+import java.nio.file.Path;
 import java.util.Scanner;
 
 /**
@@ -14,6 +15,7 @@ public class GdfApp {
      */
     public static Rep currentRep = null;
     public static int ner;
+    public static Path copiedFile = null;
 
     /**
      * Method main.
@@ -135,6 +137,26 @@ public class GdfApp {
             } catch (ArrayIndexOutOfBoundsException e) {
                 result += "Veuillez saisir le text entre guillemets";
             }
+        } else if (cmd.length == 2 && cmd[1].equals("copy")) {
+           try {
+                ner = Integer.parseInt(cmd[0]);
+                if (currentRep.copy(ner) != null) {
+                    copiedFile = currentRep.copy(ner);
+                } else {
+                    result += "Ce NER n'existe pas !\n";
+                }
+            } catch (NumberFormatException ex) {
+                result += "Ner doit être un entier";
+            }
+        } else if (cmd.length == 1 && cmd[0].equals("copy")) {
+            if (currentRep.copy(ner) != null) {
+                copiedFile = currentRep.copy(ner);
+                result += "Element copié.";
+            } else {
+                result += "Ce NER n'existe pas !\n";
+            }
+        } else if (cmd.length == 1 && cmd[0].equals("past")) {
+            result += currentRep.past(copiedFile);
         } else if (cmd[0].equals("help")) {
             result += "Le saisie doit être sous la forme [<NER>] [<Commande>] [<Nom>].\n"
                     + "Les crochets signifient \"optionnel\"\n"
