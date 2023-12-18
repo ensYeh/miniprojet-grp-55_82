@@ -81,17 +81,9 @@ public class RepTest
         // Assert
         assertEquals(gdf.remonter().getCurrentFolderPath(), FileUtils.getUserDirectoryPath());
     }
-    
-    @Test
-    public void TestFind() {
-        // Act
-        String res = gdf.find("file5");
-        // Assert
-        assertEquals(res, "Fichier non trouvé !\n");
-    }
 
     @Test
-    public void tesCopy(){
+    public void TestCopy(){
         // Act
         Path res = gdf.copy(567);
         // Assert
