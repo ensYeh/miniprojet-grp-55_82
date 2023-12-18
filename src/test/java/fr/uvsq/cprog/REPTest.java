@@ -81,9 +81,13 @@ public class RepTest
     }
 
     @Test
+<<<<<<< HEAD
     public void TestRemonter() throws InterruptedException
     {
         Thread.sleep(4000);
+=======
+    public void TestRemonter() throws InterruptedException {
+>>>>>>> beb7db61afcc70c305a50cb26c559176869c3eee
         // Act
         String res = gdf.mkdir_method("Fol");
         gdf = new REP(FileUtils.getUserDirectoryPath() + "\\Fol");
