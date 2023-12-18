@@ -9,6 +9,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 /**
@@ -34,6 +37,8 @@ public class Rep {
             if (!this.notes.exists()) {
                 this.notes.createNewFile();
                 this.serializedNote();
+            } else if (this.notes.exists()) {
+                this.updateSerializedNote();
             }
 
         } catch (IOException e) {
@@ -89,6 +94,58 @@ public class Rep {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Cette méthode permet de mettre à jour le fichier sérialiser.
+     */
+    public void updateSerializedNote() {
+        String[] contenus = this.currentFolder.list();
+        try {
+            if (!this.notes.exists()) {
+                this.notes.createNewFile();
+                this.serializedNote();
+            } else if (contenus.length > this.deserializedNote().size()) {
+                ArrayList<Er> ers = this.deserializedNote();
+                for (String er : contenus) {
+                    boolean contains = false;
+                    for (Er element : ers) {
+                        if (er.equals(element.getEr())) {
+                            contains = true;
+                        }
+                    }
+
+                    if (!contains) {
+                        Er addEr = new Er(ers.size() + 1, er);
+                        ers.add(addEr);
+                    } 
+                }
+                this.serializedNote(ers);
+            } else if (contenus.length < this.deserializedNote().size()) {
+                ArrayList<Er> ers = this.deserializedNote();
+                ArrayList<Er> deleteEr = new ArrayList<Er>();
+                for (Er element : ers) {
+                    boolean contains = false;
+                    for (String er : contenus) {
+                        if (!er.equals(element.getEr())) {
+                            contains = true;
+                        }
+                    }
+
+                    if (contains) {
+                        deleteEr.add(element);
+                    } 
+                }
+                for (Er er : deleteEr) {
+                    ers.remove(er);
+                }
+                this.serializedNote(ers);
+            }
+
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -166,10 +223,11 @@ public class Rep {
      * 
      */
     public String ls_method() {
+        this.updateSerializedNote();
+        ArrayList<Er> ers = this.deserializedNote();
+
         String result = "Ner Name\n"
                 + "--- ----\n";
-
-        ArrayList<Er> ers = this.deserializedNote();
 
         for (int i = 0; i < ers.size(); i++) {
             result += ers.get(i).getNer() + " " + ers.get(i).getEr() 
@@ -185,6 +243,7 @@ public class Rep {
      * 
      */
     public boolean ajouterNote(int ner, String note) {
+        this.updateSerializedNote();
         ArrayList<Er> ers = deserializedNote();
         for (int i = 0; i < ers.size(); i++) {
             if (ers.get(i).getNer() == ner) {
@@ -203,6 +262,7 @@ public class Rep {
      * 
      */
     public boolean retireNote(int ner) {
+        this.updateSerializedNote();
         ArrayList<Er> ers = deserializedNote();
         for (int i = 0; i < ers.size(); i++) {
             if (ers.get(i).getNer() == ner) {
@@ -229,6 +289,7 @@ public class Rep {
      * 
      */
     public Rep descendre(int ner) {
+        this.updateSerializedNote();
         ArrayList<Er> ers = deserializedNote();
         Rep gdfChild = null;
         for (int i = 0; i < ers.size(); i++) {
@@ -250,6 +311,7 @@ public class Rep {
      */
     public String visu(int ner) {
         String result = null;
+        this.updateSerializedNote();
         ArrayList<Er> ers = deserializedNote();
         for (int i = 0; i < ers.size(); i++) {
             if (ers.get(i).getNer() == ner) {
@@ -342,43 +404,52 @@ public class Rep {
         return result;
     }
 
-<<<<<<< HEAD
-=======
-    public File copy(int ner)
-    {
-        File file = null;
-        ArrayList<ER> listElement = this.deserializedNote();
+    /**
+     * Cette méthode permet de copie un fichier.
+     * 
+     */
+    public Path copy(int ner) {
+        ArrayList<Er> listElement = this.deserializedNote();
         for (int i = 0; i<listElement.size(); i++){
-            if(listElement.get(i).getNer() == ner) {
-                file = new File(listElement.get(i).getEr());
-                return file;   
+            if (listElement.get(i).getNer() == ner) {
+                File copiedFile = new File(this.currentFolder.getAbsolutePath() + "\\" + listElement.get(i).getEr());
+                return copiedFile.toPath();
             }
-            break;
         }
 
-        return file;
+        return null;
+    }
+
+    /**
+     * Cette méthode permet de coller un fichier dans le répertoire courant.
+     */
+    public String past(Path copiedEr) {
+        
+        if (copiedEr != null) {
+            try {
+                Files.copy( copiedEr, 
+                    (new File(this.currentFolder + "\\" + copiedEr.getFileName().toString())).toPath(), 
+                    StandardCopyOption.REPLACE_EXISTING);
+                return "Element collé.\n";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "Aucun Element est copié.\n";
 
     }
-    public void cut(int ner)
-    {
-        ArrayList<ER> listElement = this.deserializedNote();
-           int indexner = 0;
-        for ( indexner = 0; indexner<listElement.size(); indexner++){
-            if (listElement.get(indexner).getNer() == ner) {
 
-                ER cutElement= listElement.remove(indexner);
-                System.out.println("file moved successfully: " + cutElement);
-
-                break;
-            }
-            if(indexner == listElement.size()) {
-             
-                System.out.println("error moving file: file not found");
-            }
-                
+    /**
+     * Cette méthode permet de couper un fichier.
+     * 
+     */
+    public Path cut(int ner) {
+        if (this.copy(ner) != null) {
+           Path copied = this.copy(ner);
+           this.copy(ner).toFile().delete();
+           return copied;
         }
-
+        return null;
     }   
     
->>>>>>> 061bfe91b3211da51fd90c21208b47166a140449
 }

@@ -1,5 +1,6 @@
 package fr.uvsq.cprog;
 
+import java.nio.file.Path;
 import java.util.Scanner;
 
 /**
@@ -14,6 +15,7 @@ public class GdfApp {
      */
     public static Rep currentRep = null;
     public static int ner;
+    public static Path copiedEr = null;
 
     /**
      * Méthode main.
@@ -139,6 +141,22 @@ public class GdfApp {
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
                 result += "Veuillez saisir le text entre guillemets";
+            }
+        } else if (cmd.length == 2 && cmd[1].equals("copy")) {
+            try {
+                ner = Integer.parseInt(cmd[0]);
+                copiedEr = currentRep.copy(ner);
+            } catch (NumberFormatException ex) {
+                result += "Ner doit être un entier";
+            }
+        } else if (cmd.length == 1 && cmd[0].equals("past")) {
+            result += currentRep.past(copiedEr);
+        } else if (cmd.length == 2 && cmd[1].equals("cut")) {
+            try {
+                ner = Integer.parseInt(cmd[0]);
+                copiedEr = currentRep.cut(ner);
+            } catch (NumberFormatException ex) {
+                result += "Ner doit être un entier";
             }
         } else if (cmd[0].equals("help")) {
             result += "Le saisie doit être sous la forme [<NER>] [<Commande>] "
