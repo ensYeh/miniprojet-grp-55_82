@@ -14,12 +14,12 @@ import java.io.File;
  *
  */
 public class GdfApp {
-    public static REP currentRep = null;
+    public static Rep currentRep = null;
     public static int ner;
     
     public static void main(String[] args)
     {
-        currentRep = new REP(args[0]);
+        currentRep = new Rep(args[0]);
         System.out.println("Si vous avez besoin d'aider taper la commande <help> !");
         while(true){
             System.out.println("\n" + currentRep.getCurrentFolderPath() + ner + ">");
@@ -33,7 +33,7 @@ public class GdfApp {
 
     public static void setCurrentRep(String path)
     {
-        REP gdfChange = new REP(path);
+        Rep gdfChange = new Rep(path);
         currentRep = gdfChange; 
     }
 
