@@ -1,5 +1,6 @@
 package fr.uvsq.cprog;
 
+<<<<<<< Updated upstream
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +14,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+=======
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+>>>>>>> Stashed changes
 
 /**
  * La Class Rep représente le répertoire courant
@@ -449,7 +456,15 @@ public class Rep {
            this.copy(ner).toFile().delete();
            return copied;
         }
+<<<<<<< Updated upstream
         return null;
     }   
     
 }
+=======
+
+    }  
+   
+}   
+
+>>>>>>> Stashed changes

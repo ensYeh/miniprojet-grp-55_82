@@ -9,11 +9,16 @@ import java.util.Scanner;
  * entre l'utilisateur et le gestionnaire de fichiers.
  *
  */
+<<<<<<< Updated upstream
 public class GdfApp {
     /**
      * Attributs static.
      */
     public static Rep currentRep = null;
+=======
+public class GDFApp {
+    public static REP currentRep = null;
+>>>>>>> Stashed changes
     public static int ner;
     public static Path copiedEr = null;
 
@@ -37,6 +42,7 @@ public class GdfApp {
         }
     }
 
+<<<<<<< Updated upstream
     /**
      * Méthode permet de changer le répertoire courant.
      *
@@ -45,6 +51,12 @@ public class GdfApp {
     public static void setCurrentRep(String path) {
         Rep gdfChange = new Rep(path);
         currentRep = gdfChange;
+=======
+    public static void setCurrentRep(String path)
+    {
+        REP gdfChange = new REP(path);
+        currentRep = gdfChange; 
+>>>>>>> Stashed changes
     }
 
     /**
@@ -62,8 +74,15 @@ public class GdfApp {
             result = currentRep.touch_method(cmd[1]);
         } else if (cmd.length == 1 && cmd[0].equals("..")) {
             currentRep = currentRep.remonter();
+<<<<<<< Updated upstream
         } else if (cmd.length == 2 && cmd[1].equals(".")) {
             try {
+=======
+        }
+        else if(cmd.length == 2 && cmd[1].equals(".")){
+            try
+            {
+>>>>>>> Stashed changes
                 ner = Integer.parseInt(cmd[0]);
                 if (currentRep.descendre(ner) != null) {
                     currentRep = currentRep.descendre(ner);
@@ -106,7 +125,20 @@ public class GdfApp {
                 } else {
                     result += "Ce NER n'existe pas !\n";
                 }
-            } catch (NumberFormatException ex) {
+            } 
+            catch (NumberFormatException ex) {
+                result += "Ner doit être un entier";
+            }
+            else if (cmd.length == 2 && cmd[1].equals("cut")) {
+            try {
+                ner = Integer.parseInt(cmd[0]);
+                if(currentRep.cut(ner)){
+                    result += "Note supprimé\n";
+                }else{
+                    result += "Ce NER n'existe pas !\n";
+                }
+            } 
+            catch (NumberFormatException ex) {
                 result += "Ner doit être un entier";
             }
         } else if (cmd.length == 1 && cmd[0].equals("-")) {
