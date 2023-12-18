@@ -112,6 +112,7 @@ public class RepTest
     }
     @Test
     public void TestPast(){
+        Object path;
         // Act
         String res = gdf.past(path);
         // Assert
