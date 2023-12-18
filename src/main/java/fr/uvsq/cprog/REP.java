@@ -56,7 +56,7 @@ public class Rep {
     }
 
     /**
-     * Cette méthode permet de serialiser 
+     * Cette méthode permet de serialiser
      * les éléments déjà existant dans le répertoire.
      * 
      */
@@ -83,7 +83,7 @@ public class Rep {
     }
 
     /**
-     * Cette méthode permet de permet de sérialiser 
+     * Cette méthode permet de permet de sérialiser
      * une liste des objet Er données.
      * 
      */
@@ -122,7 +122,7 @@ public class Rep {
                     if (!contains) {
                         Er addEr = new Er(ers.size() + 1, er);
                         ers.add(addEr);
-                    } 
+                    }
                 }
                 this.serializedNote(ers);
             } else if (contenus.length < this.deserializedNote().size()) {
@@ -138,7 +138,7 @@ public class Rep {
 
                     if (contains) {
                         deleteEr.add(element);
-                    } 
+                    }
                 }
                 for (Er er : deleteEr) {
                     ers.remove(er);
@@ -218,7 +218,7 @@ public class Rep {
     }
 
     /**
-     * En utilisant la méthode desérialisation, 
+     * En utilisant la méthode desérialisation,
      * cette méthode permet de lister les éléments du répertoire courant.
      * 
      */
@@ -230,15 +230,15 @@ public class Rep {
                 + "--- ----\n";
 
         for (int i = 0; i < ers.size(); i++) {
-            result += ers.get(i).getNer() + " " + ers.get(i).getEr() 
-                + " " + ers.get(i).getNote() + "\n";
+            result += ers.get(i).getNer() + " " + ers.get(i).getEr()
+                    + " " + ers.get(i).getNote() + "\n";
         }
 
         return result;
     }
 
     /**
-     * Cette méthode permet d'ajouter ou concaténer une note à 
+     * Cette méthode permet d'ajouter ou concaténer une note à
      * un élément donnée du répertoire courant.
      * 
      */
@@ -345,7 +345,7 @@ public class Rep {
     }
 
     /**
-     * Cette méthode permet de recherche un fichier dans répertoire 
+     * Cette méthode permet de recherche un fichier dans répertoire
      * et dans tous ces sous-répertoire.
      * 
      */
@@ -410,9 +410,10 @@ public class Rep {
      */
     public Path copy(int ner) {
         ArrayList<Er> listElement = this.deserializedNote();
-        for (int i = 0; i<listElement.size(); i++){
+        for (int i = 0; i < listElement.size(); i++) {
             if (listElement.get(i).getNer() == ner) {
-                File copiedFile = new File(this.currentFolder.getAbsolutePath() + "\\" + listElement.get(i).getEr());
+                File copiedFile = new File(this.currentFolder.getAbsolutePath() 
+                    + "\\" + listElement.get(i).getEr());
                 return copiedFile.toPath();
             }
         }
@@ -424,12 +425,13 @@ public class Rep {
      * Cette méthode permet de coller un fichier dans le répertoire courant.
      */
     public String past(Path copiedEr) {
-        
+
         if (copiedEr != null) {
             try {
-                Files.copy( copiedEr, 
-                    (new File(this.currentFolder + "\\" + copiedEr.getFileName().toString())).toPath(), 
-                    StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(copiedEr,
+                        (new File(this.currentFolder + "\\" 
+                        + copiedEr.getFileName().toString())).toPath(),
+                        StandardCopyOption.REPLACE_EXISTING);
                 return "Element collé.\n";
             } catch (IOException e) {
                 e.printStackTrace();
@@ -439,19 +441,4 @@ public class Rep {
 
     }
 
-    /**
-     * Cette méthode permet de couper un fichier.
-     * 
-     */
-    public Path cut(int ner) {
-        if (this.copy(ner) != null) {
-           Path copied = this.copy(ner);
-           this.copy(ner).toFile().delete();
-           return copied;
-        }
-
-        return null;
-    }   
-    
 }
-

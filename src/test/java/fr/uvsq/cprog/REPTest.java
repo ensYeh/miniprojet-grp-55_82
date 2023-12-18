@@ -4,21 +4,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Path;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
 
 /**
  * Unit test for simple App.
  */
-public class RepTest {
+public class RepTest 
+{ 
     // Arrange
     Rep gdf = new Rep(FileUtils.getUserDirectoryPath());
 
     /**
-     * Test de la méthode créer repertoire.
+     * Rigorous Test :-)
      */
+
     @Test
-    public void TestOfMkdirMethod() {
+    public void TestOfMkdirMethod()
+    {
         // Act
         String res = gdf.mkdir_method("Doc");
 
@@ -28,11 +33,9 @@ public class RepTest {
         assertEquals(res, res2);
     }
 
-    /**
-     * Test de la méthode créer fichier.
-     */
     @Test
-    public void TestOfTouchMethod() {
+    public void TestOfTouchMethod()
+    {
         // Act
         String res = gdf.touch_method("file.txt");
 
@@ -42,57 +45,57 @@ public class RepTest {
         assertEquals(res, res2);
     }
 
-    /**
-     * Test de la méthode ajouter note.
-     */
     @Test
-    public void TestAjouterNote() {
+    public void TestAjouterNote()
+    {
         // Act
         boolean res = gdf.ajouterNote(1000, "fichier note");
         // Assert
         assertEquals(res, false);
     }
 
-    /**
-     * Test de la méthode retire note.
-     */
     @Test
-    public void TestRetireNote() {
+    public void TestRetireNote()
+    {
         // Act
         boolean res = gdf.retireNote(1000);
         // Assert
         assertEquals(res, false);
     }
 
-    // @Test
-    // public void TestVisu()
-    // {
-    // // Act
-
-    // // Assert
-
-    // }
-
-    /**
-     * Test de la méthode changer de répertoire.
-     */
     @Test
-    public void TestDescendre() {
+    public void TestDescendre()
+    {
         // Act
         // Assert
         assertEquals(gdf.descendre(1), null);
     }
 
-    /**
-     * Test de la méthode remonter au répertoire parent.
-     */
     @Test
-    public void TestRemonter() throws InterruptedException {
+    public void TestRemonter() throws InterruptedException
+    {
+        Thread.sleep(4000);
         // Act
         String res = gdf.mkdir_method("Fol");
         gdf = new Rep(FileUtils.getUserDirectoryPath() + "\\Fol");
         // Assert
         assertEquals(gdf.remonter().getCurrentFolderPath(), FileUtils.getUserDirectoryPath());
     }
+    
+    @Test
+    public void TestFind() {
+        // Act
+        String res = gdf.find("file5");
+        // Assert
+        assertEquals(res, "Fichier non trouvé !\n");
+    }
 
-}
+    @Test
+    public void tesCopy(){
+        // Act
+        Path res = gdf.copy(567);
+        // Assert
+        assertEquals(res, null);
+    }
+   
+}   
