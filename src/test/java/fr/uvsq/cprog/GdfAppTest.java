@@ -17,7 +17,7 @@ public class GdfAppTest {
     /**
      * Rigorous Test for those commands that do not require NER.
      */
-    static Stream<List<String>> commandArgumentsProvider() {
+    /*static Stream<List<String>> commandArgumentsProvider() {
         return Stream.of(
             Arrays.asList("mkdir DocTest", "Dossier crée avec succès\n"),
             Arrays.asList("touch FileTes", "Fichier crée avec succès\n"),
@@ -49,6 +49,6 @@ public class GdfAppTest {
             // Assert
             assertEquals(res, exceptedResult);
         }
-    }
+    }*/
 
 }

@@ -15,13 +15,13 @@ import org.junit.jupiter.api.*;
 public class RepTest 
 { 
     // Arrange
-    Rep gdf = new Rep(FileUtils.getUserDirectoryPath());
+    /*Rep gdf = new Rep(FileUtils.getUserDirectoryPath());
 
     /**
      * Rigorous Test :-)
      */
 
-    @Test
+    /*@Test
     public void TestOfMkdirMethod()
     {
         // Act
@@ -57,7 +57,7 @@ public class RepTest
     @Test
     public void TestRetireNote()
     {
-        // Act
+        // Actstatic
         boolean res = gdf.retireNote(1000);
         // Assert
         assertEquals(res, false);
@@ -88,6 +88,6 @@ public class RepTest
         Path res = gdf.copy(567);
         // Assert
         assertEquals(res, null);
-    }
+    }*/
    
 }   

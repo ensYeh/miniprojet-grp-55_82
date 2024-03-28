@@ -138,7 +138,7 @@ public class GdfApp {
                 result += "Veuillez saisir le text entre guillemets";
             }
         } else if (cmd.length == 2 && cmd[1].equals("copy")) {
-           try {
+            try {
                 ner = Integer.parseInt(cmd[0]);
                 if (currentRep.copy(ner) != null) {
                     copiedFile = currentRep.copy(ner);
