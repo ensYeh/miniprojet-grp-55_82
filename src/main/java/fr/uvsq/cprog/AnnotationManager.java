@@ -1,51 +1,62 @@
-package fr.uvsq.cprog;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AnnotationManager {
-    private Map<String, String> annotations; // Map<FilePath, Annotation>
+    private final String path;
+    private static final String NOTES_FILE = "notes";
 
-    public AnnotationManager() {
-        this.annotations = new HashMap<>();
-        loadAnnotationsFromFile(); // Charge les annotations à partir du fichier "notes" lors de la création de l'objet
+    public AnnotationManager(String path) {
+        this.path = path;
     }
 
-    public void addAnnotation(String element, String annotation) {
-        annotations.put(element, annotation);
-        saveAnnotationsToFile(); // Enregistre les annotations dans le fichier "notes" après l'ajout
-    }
-
-    public void removeAnnotation(String filePath) {
-        annotations.remove(filePath);
-        saveAnnotationsToFile(); // Enregistre les annotations dans le fichier "notes" après la suppression
-    }
-
-    public String getAnnotation(String filePath) {
-        return annotations.get(filePath);
-    }
-
-    private void loadAnnotationsFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("notes"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(":", 2);
-                if (parts.length == 2) {
-                    annotations.put(parts[0], parts[1]);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void addAnnotation(int ner, String annotation) {
+        Map<Integer, String> annotationData = loadAnnotationData();
+        if (annotationData.get(ner) != null) {
+            annotation = annotationData.get(ner) + " " + annotation; // Concaténer les notes existantes avec la nouvelle note
         }
+        annotationData.put(ner, annotation);
+        saveAnnotationData(annotationData);
     }
 
-    private void saveAnnotationsToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("notes"))) {
-            for (Map.Entry<String, String> entry : annotations.entrySet()) {
-                writer.write(entry.getKey() + ":" + entry.getValue());
-                writer.newLine();
+
+    public void removeAnnotation(int ner) {
+        Map<Integer, String> annotationData = loadAnnotationData();
+        annotationData.remove(ner);
+        saveAnnotationData(annotationData);
+    }
+
+    public String[] getAnnotations(int ner) {
+        Map<Integer, String> annotationData = loadAnnotationData();
+        return annotationData.containsKey(ner) ? new String[]{annotationData.get(ner)} : new String[]{};
+    }
+
+    private Map<Integer, String> loadAnnotationData() {
+        Map<Integer, String> annotationData = new HashMap<>();
+        File notesFile = new File(path + "/" + NOTES_FILE);
+        if (!notesFile.exists()) {
+            try {
+                // Créer un nouveau fichier "notes" s'il n'existe pas
+                notesFile.createNewFile();
+                // Sauvegarder un Map vide dans le fichier
+                saveAnnotationData(annotationData);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        } else {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(notesFile))) {
+                annotationData = (Map<Integer, String>) ois.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return annotationData;
+    }
+
+
+    private void saveAnnotationData(Map<Integer, String> annotationData) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path + "/" + NOTES_FILE))) {
+            oos.writeObject(annotationData);
         } catch (IOException e) {
             e.printStackTrace();
         }

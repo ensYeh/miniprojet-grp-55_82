@@ -33,6 +33,10 @@ public class Directory {
         files.add(file);
     }
 
+    public String getpath() {
+        return path;
+    }
+
     public List<FileItem> getFiles() {
         return files;
     }
